@@ -6,3 +6,7 @@
 Experimental coroutines-based MVI micro framework for Android.
 
 [Sample usage](https://github.com/solrudev/OkkeiPatcher/tree/master/app/src/main/kotlin/ru/solrudev/okkeipatcher/ui/screen/home)
+
+```kotlin
+implementation("io.github.solrudev:jetmvi:x.y.z")
+```
