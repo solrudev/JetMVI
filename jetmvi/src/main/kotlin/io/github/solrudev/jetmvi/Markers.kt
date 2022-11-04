@@ -14,3 +14,8 @@ public interface Event
  * Marker interface for side effects.
  */
 public interface Effect
+
+/**
+ * Marker interface for events which should be ignored when transformed to another type.
+ */
+public interface MappedEventToIgnore : Event
