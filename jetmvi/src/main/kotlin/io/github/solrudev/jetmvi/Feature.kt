@@ -30,8 +30,8 @@ public sealed interface Feature<in E : Event, out S : UiState> : Flow<S> {
  * Standard implementation of [Feature] which assembles [Middlewares][Middleware] and [Reducer] together.
  */
 public open class AssemblyFeature<E : Event, S : UiState>(
-	internal val middlewares: List<Middleware<E>> = emptyList(),
-	internal val reducer: Reducer<E, S>,
+	private val middlewares: List<Middleware<E>> = emptyList(),
+	private val reducer: Reducer<E, S>,
 	internal val initialUiState: S
 ) : Feature<E, S> {
 

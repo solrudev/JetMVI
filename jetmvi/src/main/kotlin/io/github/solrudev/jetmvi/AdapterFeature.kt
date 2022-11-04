@@ -8,11 +8,19 @@ import kotlinx.coroutines.launch
 
 /**
  * Implementation of [Feature] which receives an [AssemblyFeature] and maps its event and UI state types using provided
- * [EventMapper] and [UiStateMapper].
+ * [EventMappers][EventMapper] and [UiStateMapper].
+ *
+ * @param feature [AssemblyFeature] to transform.
+ * @param toEventMapper [EventMapper] which transforms from [feature's][feature] event type to desired event type.
+ * @param fromEventMapper [EventMapper] which transforms from dispatched events type to [feature's][feature] event
+ * type.
+ * @param uiStateMapper [UiStateMapper] which transforms from [feature's][feature] UI state type to desired UI state
+ * type.
  */
 public open class AdapterFeature<in InEvent : Event, in InUiState : UiState, in OutEvent : Event, out OutUiState : UiState>(
 	private val feature: AssemblyFeature<InEvent, InUiState>,
-	private val eventMapper: EventMapper<InEvent, OutEvent>,
+	private val toEventMapper: EventMapper<InEvent, OutEvent>,
+	private val fromEventMapper: EventMapper<OutEvent, InEvent>,
 	private val uiStateMapper: UiStateMapper<InUiState, OutUiState>
 ) : Feature<OutEvent, OutUiState> {
 
@@ -28,18 +36,16 @@ public open class AdapterFeature<in InEvent : Event, in InUiState : UiState, in 
 	}
 
 	final override fun launchIn(scope: CoroutineScope): Job = scope.launch {
-		feature.events
-			.combine(feature, feature.reducer::reduce)
+		feature
 			.map(uiStateMapper)
 			.onEach(uiState::emit)
 			.launchIn(this)
-		feature.middlewares
-			.map { it.apply(feature.events) }
-			.merge()
-			.map(eventMapper)
+		feature.events
+			.map(toEventMapper)
 			.onEach(events::emit)
 			.launchIn(this)
+		feature.launchIn(this)
 	}
 
-	final override fun dispatchEvent(event: OutEvent): Boolean = events.tryEmit(event)
+	final override fun dispatchEvent(event: OutEvent): Boolean = feature.dispatchEvent(fromEventMapper(event))
 }
