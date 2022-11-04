@@ -4,3 +4,5 @@
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/solrudev/JetMVI/blob/master/LICENSE)
 
 Experimental coroutines-based MVI micro framework for Android.
+
+[Sample usage](https://github.com/solrudev/OkkeiPatcher/tree/master/app/src/main/kotlin/ru/solrudev/okkeipatcher/ui/screen/home)
