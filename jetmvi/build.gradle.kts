@@ -65,6 +65,13 @@ afterEvaluate {
 					description.set("Experimental coroutines-based MVI micro framework for Android")
 					url.set("https://github.com/solrudev/JetMVI")
 
+					licenses {
+						license {
+							name.set("The Apache Software License, Version 2.0")
+							url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+						}
+					}
+
 					developers {
 						developer {
 							id.set("solrudev")
