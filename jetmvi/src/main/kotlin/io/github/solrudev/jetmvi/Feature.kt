@@ -32,15 +32,14 @@ public sealed interface Feature<in E : Event, out S : UiState> : Flow<S> {
 public open class AssemblyFeature<E : Event, S : UiState>(
 	private val middlewares: List<Middleware<E>> = emptyList(),
 	private val reducer: Reducer<E, S>,
-	internal val initialUiState: S
+	initialUiState: S
 ) : Feature<E, S> {
 
-	private val _events = MutableSharedFlow<E>(
+	private val events = MutableSharedFlow<E>(
 		extraBufferCapacity = 16,
 		onBufferOverflow = BufferOverflow.DROP_OLDEST
 	)
 
-	internal val events = _events.asSharedFlow()
 	private val uiState = MutableStateFlow(initialUiState)
 
 	final override suspend fun collect(collector: FlowCollector<S>): Nothing {
@@ -48,16 +47,16 @@ public open class AssemblyFeature<E : Event, S : UiState>(
 	}
 
 	final override fun launchIn(scope: CoroutineScope): Job = scope.launch {
-		_events
+		events
 			.combine(uiState, reducer::reduce)
 			.onEach(uiState::emit)
 			.launchIn(this)
 		middlewares
-			.map { it.apply(_events) }
+			.map { it.apply(events) }
 			.merge()
-			.onEach(_events::emit)
+			.onEach(events::emit)
 			.launchIn(this)
 	}
 
-	final override fun dispatchEvent(event: E): Boolean = _events.tryEmit(event)
+	final override fun dispatchEvent(event: E): Boolean = events.tryEmit(event)
 }
