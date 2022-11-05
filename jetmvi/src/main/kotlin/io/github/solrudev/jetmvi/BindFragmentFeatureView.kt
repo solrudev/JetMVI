@@ -16,9 +16,12 @@ import kotlinx.coroutines.launch
 public fun <S : UiState, V> Flow<S>.bind(featureView: V): Job
 		where V : FeatureView<S>,
 			  V : Fragment {
+	if (featureView.trackedUiState === SKIP_RENDER) {
+		return Job()
+	}
 	return featureView.viewLifecycleOwner.lifecycleScope.launch {
 		featureView.viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-			collect(featureView::render)
+			distinctUntilChangedByKeys(featureView.trackedUiState).collect(featureView::render)
 		}
 	}
 }
@@ -33,9 +36,12 @@ public fun <S : UiState, V> Flow<S>.bind(featureView: V): Job
 public fun <S : UiState, V> Flow<S>.bindHeadless(featureView: V): Job
 		where V : FeatureView<S>,
 			  V : Fragment {
+	if (featureView.trackedUiState === SKIP_RENDER) {
+		return Job()
+	}
 	return featureView.lifecycleScope.launch {
 		featureView.repeatOnLifecycle(Lifecycle.State.STARTED) {
-			collect(featureView::render)
+			distinctUntilChangedByKeys(featureView.trackedUiState).collect(featureView::render)
 		}
 	}
 }
@@ -50,9 +56,12 @@ public fun <S : UiState, V> Flow<S>.bindHeadless(featureView: V): Job
 public fun <S : UiState, V> Flow<S>.bindDerived(parentView: V, derivedView: FeatureView<S>): Job
 		where V : FeatureView<S>,
 			  V : Fragment {
+	if (derivedView.trackedUiState === SKIP_RENDER) {
+		return Job()
+	}
 	return parentView.viewLifecycleOwner.lifecycleScope.launch {
 		parentView.viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-			collect(derivedView::render)
+			distinctUntilChangedByKeys(derivedView.trackedUiState).collect(derivedView::render)
 		}
 	}
 }
