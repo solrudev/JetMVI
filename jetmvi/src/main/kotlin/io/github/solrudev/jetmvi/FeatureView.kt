@@ -26,6 +26,8 @@ public interface FeatureView<in S : UiState> {
 
 /**
  * [FeatureView] which only hosts [derived views][derivedView] and doesn't render anything itself.
+ *
+ * [Binding][bind] this view is a no-op (unless [trackedUiState] is overridden).
  */
 public interface HostFeatureView<in S : UiState> : FeatureView<S> {
 
