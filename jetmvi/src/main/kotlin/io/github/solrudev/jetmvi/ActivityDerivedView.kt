@@ -2,6 +2,7 @@ package io.github.solrudev.jetmvi
 
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import kotlin.reflect.KProperty
 
@@ -61,8 +62,8 @@ private class ActivityDerivedViewProperty<in V, in S : UiState, out DV : Feature
 	}
 
 	private fun checkActivityLifecycle(thisRef: V) {
-		if (thisRef.isDestroyed) {
-			error("Accessing derived view in activity after onDestroy().")
+		if (thisRef.lifecycle.currentState == Lifecycle.State.DESTROYED) {
+			error("Accessing derived view in activity when activity is destroyed.")
 		}
 	}
 }
