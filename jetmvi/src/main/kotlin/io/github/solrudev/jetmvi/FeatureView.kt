@@ -6,17 +6,17 @@ package io.github.solrudev.jetmvi
 public interface FeatureView<in S : UiState> {
 
 	/**
-	 * Properties of [UiState] whose changes are tracked by this view. When this array is empty (it is by default),
+	 * Properties of [UiState] whose changes are tracked by this view. When this list is empty (it is by default),
 	 * [render] method will be called on every UI state update. Override this to skip render when unrelated properties
 	 * change (may be useful in [derived views][derivedView]).
 	 *
 	 * Example:
 	 * ```
-	 * override val trackedUiState = arrayOf(MyUiState::isButtonEnabled, MyUiState::buttonText)
+	 * override val trackedUiState = listOf(MyUiState::isButtonEnabled, MyUiState::buttonText)
 	 * ```
 	 */
-	public val trackedUiState: Array<out (S) -> Any?>
-		get() = emptyArray()
+	public val trackedUiState: List<(S) -> Any?>
+		get() = emptyList()
 
 	/**
 	 * Called when UI state changes.
@@ -29,7 +29,7 @@ public interface FeatureView<in S : UiState> {
  */
 public interface HostFeatureView<in S : UiState> : FeatureView<S> {
 
-	override val trackedUiState: Array<out (S) -> Any?>
+	override val trackedUiState: List<(S) -> Any?>
 		get() = SKIP_RENDER
 
 	override fun render(uiState: S) {}
@@ -38,4 +38,4 @@ public interface HostFeatureView<in S : UiState> : FeatureView<S> {
 /**
  * For use as a value of [HostFeatureView.trackedUiState]. Denotes that rendering for the view should be skipped.
  */
-internal val SKIP_RENDER: Array<out (UiState) -> Any?> = arrayOf({ 0 })
+internal val SKIP_RENDER: List<(UiState) -> Any?> = listOf { 0 }

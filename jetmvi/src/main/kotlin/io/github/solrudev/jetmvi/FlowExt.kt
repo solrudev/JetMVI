@@ -3,7 +3,7 @@ package io.github.solrudev.jetmvi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-internal fun <T> Flow<T>.distinctUntilChangedByKeys(keySelectors: Array<out (T) -> Any?>): Flow<T> {
+internal fun <T> Flow<T>.distinctUntilChangedByKeys(keySelectors: List<(T) -> Any?>): Flow<T> {
 	if (keySelectors.isEmpty()) {
 		return this
 	}
