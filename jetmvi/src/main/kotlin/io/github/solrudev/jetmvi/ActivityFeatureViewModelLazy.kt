@@ -4,6 +4,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.CreationExtras
 
 /**
  * Returns a property delegate to access [FeatureViewModel] scoped to this [ComponentActivity] and [binds][bind] it.
@@ -29,11 +31,13 @@ import androidx.lifecycle.LifecycleOwner
  * created FeatureViewModel. Derived views are created with [derivedView] delegate.
  */
 public inline fun <reified VM : FeatureViewModel<E, S>, E : Event, S : UiState, V> V.featureViewModels(
-	vararg derivedViewProducer: V.() -> FeatureView<S>
+	vararg derivedViewProducer: V.() -> FeatureView<S>,
+	noinline extrasProducer: (() -> CreationExtras)? = null,
+	noinline factoryProducer: (() -> ViewModelProvider.Factory)? = null
 ): Lazy<VM>
 		where V : FeatureView<S>,
 			  V : ComponentActivity {
-	val viewModelLazy = viewModels<VM>()
+	val viewModelLazy = viewModels<VM>(extrasProducer, factoryProducer)
 	return ActivityFeatureViewModelLazy(this, viewModelLazy, derivedViewProducer)
 }
 

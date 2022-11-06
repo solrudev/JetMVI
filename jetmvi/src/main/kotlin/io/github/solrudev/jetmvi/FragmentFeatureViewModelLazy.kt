@@ -7,6 +7,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.viewmodel.CreationExtras
 
 /**
  * Returns a property delegate to access [FeatureViewModel] scoped to this [Fragment] and [binds][bind] it.
@@ -32,11 +35,14 @@ import androidx.lifecycle.LifecycleOwner
  * created FeatureViewModel. Derived views are created with [derivedView] delegate.
  */
 public inline fun <reified VM : FeatureViewModel<E, S>, E : Event, S : UiState, V> V.featureViewModels(
-	vararg derivedViewProducer: V.() -> FeatureView<S>
+	vararg derivedViewProducer: V.() -> FeatureView<S>,
+	noinline ownerProducer: () -> ViewModelStoreOwner = { this },
+	noinline extrasProducer: (() -> CreationExtras)? = null,
+	noinline factoryProducer: (() -> ViewModelProvider.Factory)? = null
 ): Lazy<VM>
 		where V : FeatureView<S>,
 			  V : Fragment {
-	val viewModelLazy = viewModels<VM>()
+	val viewModelLazy = viewModels<VM>(ownerProducer, extrasProducer, factoryProducer)
 	return FragmentFeatureViewModelLazy(this, viewModelLazy, derivedViewProducer)
 }
 
