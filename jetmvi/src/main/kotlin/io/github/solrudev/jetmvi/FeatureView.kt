@@ -15,7 +15,7 @@ public interface FeatureView<in S : UiState> {
 	 * override val trackedUiState = arrayOf(MyUiState::isButtonEnabled, MyUiState::buttonText)
 	 * ```
 	 */
-	public val trackedUiState: Array<out (S) -> Any>
+	public val trackedUiState: Array<out (S) -> Any?>
 		get() = emptyArray()
 
 	/**
@@ -29,7 +29,7 @@ public interface FeatureView<in S : UiState> {
  */
 public interface HostFeatureView<in S : UiState> : FeatureView<S> {
 
-	override val trackedUiState: Array<out (S) -> Any>
+	override val trackedUiState: Array<out (S) -> Any?>
 		get() = SKIP_RENDER
 
 	override fun render(uiState: S) {}
@@ -38,4 +38,4 @@ public interface HostFeatureView<in S : UiState> : FeatureView<S> {
 /**
  * For use as a value of [HostFeatureView.trackedUiState]. Denotes that rendering for the view should be skipped.
  */
-internal val SKIP_RENDER: Array<out (UiState) -> Any> = arrayOf({ 0 })
+internal val SKIP_RENDER: Array<out (UiState) -> Any?> = arrayOf({ 0 })
