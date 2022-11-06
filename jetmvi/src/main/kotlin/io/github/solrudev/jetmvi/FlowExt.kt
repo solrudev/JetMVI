@@ -18,8 +18,8 @@ internal fun <T> Flow<T>.distinctUntilChangedByKeys(keySelectors: List<(T) -> An
 		return true
 	}
 
-	var previousKeys: Array<Any?>? = null
 	return flow {
+		var previousKeys: Array<Any?>? = null
 		collect { value ->
 			val keys = Array(keySelectors.size) { index -> keySelectors[index](value) }
 			if (previousKeys == null || !keysAreEqual(keys, previousKeys!!)) {

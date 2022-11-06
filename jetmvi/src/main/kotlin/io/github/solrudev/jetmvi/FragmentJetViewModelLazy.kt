@@ -5,14 +5,11 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.*
 import androidx.lifecycle.viewmodel.CreationExtras
 
 /**
- * Returns a property delegate to access [FeatureViewModel] scoped to this [Fragment] and [binds][bind] it.
+ * Returns a property delegate to access [JetViewModel] scoped to this [Fragment] and [binds][bind] it.
  *
  * If you have [derived views][derivedView] in your fragment which should be bound to the fragment's [FeatureViewModel],
  * you can [bind][bindDerived] them by passing them to this delegate function.
@@ -34,26 +31,30 @@ import androidx.lifecycle.viewmodel.CreationExtras
  * @param derivedViewProducer function which returns view derived from this fragment. Derived view will be bound to the
  * created FeatureViewModel. Derived views are created with [derivedView] delegate.
  */
-public inline fun <reified VM : FeatureViewModel<E, S>, E : Event, S : UiState, V> V.featureViewModels(
+public inline fun <reified VM, S : UiState, V> V.jetViewModels(
 	vararg derivedViewProducer: V.() -> FeatureView<S>,
 	noinline ownerProducer: () -> ViewModelStoreOwner = { this },
 	noinline extrasProducer: (() -> CreationExtras)? = null,
 	noinline factoryProducer: (() -> ViewModelProvider.Factory)? = null
 ): Lazy<VM>
 		where V : FeatureView<S>,
-			  V : Fragment {
+			  V : Fragment,
+			  VM : ViewModel,
+			  VM : JetViewModel<S> {
 	val viewModelLazy = viewModels<VM>(ownerProducer, extrasProducer, factoryProducer)
-	return FragmentFeatureViewModelLazy(this, viewModelLazy, derivedViewProducer)
+	return FragmentJetViewModelLazy(this, viewModelLazy, derivedViewProducer)
 }
 
 @PublishedApi
-internal class FragmentFeatureViewModelLazy<out VM : FeatureViewModel<E, S>, in E : Event, S : UiState, in V>(
+internal class FragmentJetViewModelLazy<out VM, S : UiState, in V>(
 	private var fragment: V?,
 	private val viewModelLazy: Lazy<VM>,
 	private var derivedViewProducers: Array<out (V.() -> FeatureView<S>)>
 ) : Lazy<VM> by viewModelLazy, DefaultLifecycleObserver
 		where V : FeatureView<S>,
-			  V : Fragment {
+			  V : Fragment,
+			  VM : ViewModel,
+			  VM : JetViewModel<S> {
 
 	private val viewModel by viewModelLazy
 	private var fragmentManager: FragmentManager? = null
@@ -93,7 +94,7 @@ internal class FragmentFeatureViewModelLazy<out VM : FeatureViewModel<E, S>, in 
 	private inner class BindViewModelCallback : FragmentManager.FragmentLifecycleCallbacks() {
 
 		override fun onFragmentViewCreated(fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?) {
-			val fragment = this@FragmentFeatureViewModelLazy.fragment
+			val fragment = this@FragmentJetViewModelLazy.fragment
 			if (fragment !== f) {
 				return
 			}
