@@ -5,6 +5,8 @@
 
 Experimental coroutines-based MVI micro framework for Android.
 
+It's lifecycle-aware, and builds on top of Jetpack libraries.
+
 [Sample usage](https://github.com/solrudev/OkkeiPatcher/tree/master/app/src/main/kotlin/ru/solrudev/okkeipatcher/ui/screen/home)
 
 ```kotlin
