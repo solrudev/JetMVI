@@ -8,7 +8,7 @@ import kotlin.reflect.KProperty
 
 /**
  * Returns a property delegate for accessing [FeatureView] which is derived from the current activity (i.e. sharing
- * its [UiState] and [FeatureViewModel]).
+ * its [UiState] and [JetViewModel]).
  *
  * Example:
  * ```

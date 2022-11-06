@@ -11,7 +11,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 /**
  * Returns a property delegate to access [JetViewModel] scoped to this [ComponentActivity] and [binds][bind] it.
  *
- * If you have [derived views][derivedView] in your activity which should be bound to the activity's [FeatureViewModel],
+ * If you have [derived views][derivedView] in your activity which should be bound to the activity's [JetViewModel],
  * you can [bind][bindDerived] them by passing them to this delegate function.
  *
  * Example:
