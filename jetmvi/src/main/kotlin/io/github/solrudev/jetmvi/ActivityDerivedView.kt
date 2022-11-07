@@ -14,7 +14,7 @@ import kotlin.reflect.KProperty
  * ```
  * class SomeView(
  *     val viewBinding: MyLayoutBinding,
- *     val viewModel: MyFeatureViewModel
+ *     val viewModel: MyJetViewModel
  * ) : FeatureView<MyUiState> { ... }
  * ...
  * val someView by derivedView { SomeView(viewBinding, viewModel) }

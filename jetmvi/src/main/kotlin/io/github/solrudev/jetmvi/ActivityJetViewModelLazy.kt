@@ -18,11 +18,11 @@ import androidx.lifecycle.viewmodel.CreationExtras
  * ```
  * val derivedView1 by derivedView { DerivedView1(viewBinding, viewModel) }
  * val derivedView2 by derivedView { DerivedView2(viewBinding, viewModel) }
- * val viewModel: MyFeatureViewModel by featureViewModels(MyActivity::derivedView1, MyActivity::derivedView2)
+ * val viewModel: MyJetViewModel by jetViewModels(MyActivity::derivedView1, MyActivity::derivedView2)
  * ```
  * or
  * ```
- * val viewModel: MyFeatureViewModel by featureViewModels(
+ * val viewModel: MyJetViewModel by jetViewModels(
  *     { myActivity -> myActivity.derivedView1 },
  *     { myActivity -> myActivity.derivedView2 }
  * )
