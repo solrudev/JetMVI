@@ -12,10 +12,10 @@ public interface FeatureView<in S : UiState> {
 	 *
 	 * Example:
 	 * ```
-	 * override val trackedUiState = listOf(MyUiState::isButtonEnabled, MyUiState::buttonText)
+	 * override val trackedState = listOf(MyUiState::isButtonEnabled, MyUiState::buttonText)
 	 * ```
 	 */
-	public val trackedUiState: List<(S) -> Any?>
+	public val trackedState: List<(S) -> Any?>
 		get() = emptyList()
 
 	/**
@@ -27,17 +27,17 @@ public interface FeatureView<in S : UiState> {
 /**
  * [FeatureView] which only hosts [derived views][derivedView] and doesn't render anything itself.
  *
- * [Binding][bind] this view is a no-op (unless [trackedUiState] is overridden).
+ * [Binding][bind] this view is a no-op (unless [trackedState] is overridden).
  */
 public interface HostFeatureView<in S : UiState> : FeatureView<S> {
 
-	override val trackedUiState: List<(S) -> Any?>
+	override val trackedState: List<(S) -> Any?>
 		get() = SKIP_RENDER
 
 	override fun render(uiState: S) {}
 }
 
 /**
- * For use as a value of [HostFeatureView.trackedUiState]. Denotes that rendering for the view should be skipped.
+ * For use as a value of [HostFeatureView.trackedState]. Denotes that rendering for the view should be skipped.
  */
 internal val SKIP_RENDER: List<(UiState) -> Any?> = listOf { 0 }

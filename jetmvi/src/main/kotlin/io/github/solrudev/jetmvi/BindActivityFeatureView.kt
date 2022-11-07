@@ -16,12 +16,12 @@ import kotlinx.coroutines.launch
 public fun <S : UiState, V> Flow<S>.bind(featureView: V): Job
 		where V : FeatureView<S>,
 			  V : ComponentActivity {
-	if (featureView.trackedUiState === SKIP_RENDER) {
+	if (featureView.trackedState === SKIP_RENDER) {
 		return Job()
 	}
 	return featureView.lifecycleScope.launch {
 		featureView.repeatOnLifecycle(Lifecycle.State.STARTED) {
-			distinctUntilChangedByKeys(featureView.trackedUiState).collect(featureView::render)
+			distinctUntilChangedByKeys(featureView.trackedState).collect(featureView::render)
 		}
 	}
 }
@@ -36,12 +36,12 @@ public fun <S : UiState, V> Flow<S>.bind(featureView: V): Job
 public fun <S : UiState, V> Flow<S>.bindDerived(parentView: V, derivedView: FeatureView<S>): Job
 		where V : FeatureView<S>,
 			  V : ComponentActivity {
-	if (derivedView.trackedUiState === SKIP_RENDER) {
+	if (derivedView.trackedState === SKIP_RENDER) {
 		return Job()
 	}
 	return parentView.lifecycleScope.launch {
 		parentView.repeatOnLifecycle(Lifecycle.State.STARTED) {
-			distinctUntilChangedByKeys(derivedView.trackedUiState).collect(derivedView::render)
+			distinctUntilChangedByKeys(derivedView.trackedState).collect(derivedView::render)
 		}
 	}
 }
