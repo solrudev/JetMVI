@@ -1,31 +1,34 @@
 package io.github.solrudev.jetmvi
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.FlowCollector
 
 internal fun <T> Flow<T>.distinctUntilChangedByKeys(keySelectors: List<(T) -> Any?>): Flow<T> {
 	if (keySelectors.isEmpty()) {
 		return this
 	}
-
-	// skipping unnecessary length checks
-	fun keysAreEqual(keys1: Array<Any?>, keys2: Array<Any?>): Boolean {
-		keys1.forEachIndexed { index, key ->
-			if (key != keys2[index]) {
-				return false
-			}
-		}
-		return true
-	}
-
-	return flow {
-		var previousKeys: Array<Any?>? = null
-		collect { value ->
-			val keys = Array(keySelectors.size) { index -> keySelectors[index](value) }
-			if (previousKeys == null || !keysAreEqual(keys, previousKeys!!)) {
-				previousKeys = keys
-				emit(value)
+	// unsafe flow as we don't change context
+	return object : Flow<T> {
+		override suspend fun collect(collector: FlowCollector<T>) {
+			var previousKeys: Array<Any?>? = null
+			this@distinctUntilChangedByKeys.collect { value ->
+				val keys = Array(keySelectors.size) { index -> keySelectors[index](value) }
+				if (previousKeys == null || !keysAreEqual(keys, previousKeys!!)) {
+					previousKeys = keys
+					collector.emit(value)
+				}
 			}
 		}
 	}
+}
+
+// skipping unnecessary length checks
+@Suppress("NOTHING_TO_INLINE")
+private inline fun keysAreEqual(keys1: Array<Any?>, keys2: Array<Any?>): Boolean {
+	keys1.forEachIndexed { index, key ->
+		if (key != keys2[index]) {
+			return false
+		}
+	}
+	return true
 }
