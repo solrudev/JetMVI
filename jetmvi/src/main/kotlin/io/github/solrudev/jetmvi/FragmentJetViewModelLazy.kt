@@ -29,7 +29,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
  * ```
  *
  * @param derivedViewProducer function which returns view derived from this fragment. Derived view will be bound to the
- * created FeatureViewModel. Derived views are created with [derivedView] delegate.
+ * created JetViewModel. Derived views are created with [derivedView] delegate.
  */
 public inline fun <reified VM, S : UiState, V> V.jetViewModels(
 	vararg derivedViewProducer: V.() -> FeatureView<S>,
