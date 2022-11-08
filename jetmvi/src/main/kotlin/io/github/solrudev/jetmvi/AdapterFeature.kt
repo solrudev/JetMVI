@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.map
 
 /**
  * Implementation of [Feature] which receives an [AssemblyFeature] and maps its event and UI state types using provided
- * [EventMappers][EventMapper] and [UiStateMapper].
+ * [EventMapper] and [UiStateMapper].
  *
  * @param feature [AssemblyFeature] to transform.
  * @param eventMapper [EventMapper] which transforms from dispatched events type to [feature's][feature] event type.
