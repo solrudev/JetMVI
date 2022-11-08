@@ -7,7 +7,7 @@ Experimental coroutines-based MVI micro framework for Android.
 
 It's lifecycle-aware, and builds on top of Jetpack libraries.
 
-Supports both Redux-like approach and simpler MVVM+ UDF view model which exposes public methods.
+Supports both Redux-like and MVVM+ approaches.
 
 [Sample usage](https://github.com/solrudev/OkkeiPatcher/tree/master/app/src/main/kotlin/ru/solrudev/okkeipatcher/ui/screen/home)
 
