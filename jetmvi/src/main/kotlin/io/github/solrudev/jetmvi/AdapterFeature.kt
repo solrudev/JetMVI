@@ -2,7 +2,7 @@ package io.github.solrudev.jetmvi
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 /**
@@ -17,14 +17,8 @@ import kotlinx.coroutines.flow.map
 public open class AdapterFeature<in InEvent : JetEvent, in InState : JetState, in OutEvent : JetEvent, out OutState : JetState>(
 	private val feature: AssemblyFeature<InEvent, InState>,
 	private val eventMapper: JetEventMapper<OutEvent, InEvent?>,
-	private val stateMapper: JetStateMapper<InState, OutState>,
-) : Feature<OutEvent, OutState> {
-
-	private val uiState = feature.map(stateMapper)
-
-	final override suspend fun collect(collector: FlowCollector<OutState>) {
-		uiState.collect(collector)
-	}
+	stateMapper: JetStateMapper<InState, OutState>,
+) : Feature<OutEvent, OutState>, Flow<OutState> by feature.map(stateMapper) {
 
 	final override fun launchIn(scope: CoroutineScope): Job = feature.launchIn(scope)
 

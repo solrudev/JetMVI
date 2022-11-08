@@ -21,14 +21,10 @@ public sealed interface JetViewModel<out S : JetState> : Flow<S>
  */
 public abstract class FeatureViewModel<in E : JetEvent, out S : JetState>(
 	private val feature: Feature<E, S>
-) : ViewModel(), JetViewModel<S> {
+) : ViewModel(), JetViewModel<S>, Flow<S> by feature {
 
 	init {
 		feature.launchIn(viewModelScope)
-	}
-
-	final override suspend fun collect(collector: FlowCollector<S>) {
-		feature.collect(collector)
 	}
 
 	/**
