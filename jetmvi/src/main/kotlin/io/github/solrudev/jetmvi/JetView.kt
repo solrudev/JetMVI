@@ -3,10 +3,10 @@ package io.github.solrudev.jetmvi
 /**
  * A view which can render UI state object.
  */
-public interface FeatureView<in S : UiState> {
+public interface JetView<in S : JetState> {
 
 	/**
-	 * Properties of [UiState] whose changes are tracked by this view. When this list is empty (it is by default),
+	 * Properties of [JetState] whose changes are tracked by this view. When this list is empty (it is by default),
 	 * [render] method will be called on every UI state update. Override this to skip render when unrelated properties
 	 * change (may be useful in [derived views][derivedView]).
 	 *
@@ -25,11 +25,11 @@ public interface FeatureView<in S : UiState> {
 }
 
 /**
- * [FeatureView] which only hosts [derived views][derivedView] and doesn't render anything itself.
+ * [JetView] which only hosts [derived views][derivedView] and doesn't render anything itself.
  *
  * [Binding][bind] this view is a no-op (unless [trackedState] is overridden).
  */
-public interface HostFeatureView<in S : UiState> : FeatureView<S> {
+public interface HostJetView<in S : JetState> : JetView<S> {
 
 	override val trackedState: List<(S) -> Any?>
 		get() = SKIP_RENDER
@@ -38,6 +38,6 @@ public interface HostFeatureView<in S : UiState> : FeatureView<S> {
 }
 
 /**
- * For use as a value of [HostFeatureView.trackedState]. Denotes that rendering for the view should be skipped.
+ * For use as a value of [HostJetView.trackedState]. Denotes that rendering for the view should be skipped.
  */
-internal val SKIP_RENDER: List<(UiState) -> Any?> = listOf { 0 }
+internal val SKIP_RENDER: List<(JetState) -> Any?> = listOf { 0 }

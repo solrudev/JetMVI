@@ -12,14 +12,14 @@ import kotlinx.coroutines.flow.update
  *
  * Implemented by [FeatureViewModel] and [UDFViewModel].
  */
-public sealed interface JetViewModel<out S : UiState> : Flow<S>
+public sealed interface JetViewModel<out S : JetState> : Flow<S>
 
 /**
  * [ViewModel] container for a [Feature].
  *
- * Implements [Flow] of [UiState], so it can be collected to receive UI state updates.
+ * Implements [Flow] of [JetState], so it can be collected to receive UI state updates.
  */
-public abstract class FeatureViewModel<in E : Event, out S : UiState>(
+public abstract class FeatureViewModel<in E : JetEvent, out S : JetState>(
 	private val feature: Feature<E, S>
 ) : ViewModel(), JetViewModel<S> {
 
@@ -41,7 +41,7 @@ public abstract class FeatureViewModel<in E : Event, out S : UiState>(
 /**
  * [ViewModel] which implements unidirectional data flow pattern.
  *
- * Implements [Flow] of [UiState], so it can be collected to receive UI state updates. Also, thanks to this, it's
+ * Implements [Flow] of [JetState], so it can be collected to receive UI state updates. Also, thanks to this, it's
  * possible to use any [Flow] operators on `this` inside the view model. For example:
  *
  * ```
@@ -52,7 +52,7 @@ public abstract class FeatureViewModel<in E : Event, out S : UiState>(
  * }
  * ```
  */
-public abstract class UDFViewModel<S : UiState>(initialUiState: S) : ViewModel(), JetViewModel<S> {
+public abstract class UDFViewModel<S : JetState>(initialUiState: S) : ViewModel(), JetViewModel<S> {
 
 	private val uiState = MutableStateFlow(initialUiState)
 

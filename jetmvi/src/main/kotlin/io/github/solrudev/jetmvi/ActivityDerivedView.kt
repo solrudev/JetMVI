@@ -7,34 +7,34 @@ import androidx.lifecycle.LifecycleOwner
 import kotlin.reflect.KProperty
 
 /**
- * Returns a property delegate for accessing [FeatureView] which is derived from the current activity (i.e. sharing
- * its [UiState] and [JetViewModel]).
+ * Returns a property delegate for accessing [JetView] which is derived from the current activity (i.e. sharing
+ * its [JetState] and [JetViewModel]).
  *
  * Example:
  * ```
  * class SomeView(
  *     val viewBinding: MyLayoutBinding,
  *     val viewModel: MyJetViewModel
- * ) : FeatureView<MyUiState> { ... }
+ * ) : JetView<MyUiState> { ... }
  * ...
  * val someView by derivedView { SomeView(viewBinding, viewModel) }
  * ```
  *
  * @param derivedViewProducer function returning derived view. It has parent view as its receiver.
  */
-public fun <DV : FeatureView<S>, S : UiState, V> V.derivedView(
+public fun <DV : JetView<S>, S : JetState, V> V.derivedView(
 	derivedViewProducer: V.() -> DV
 ): DerivedViewProperty<V, S, DV>
-		where V : FeatureView<S>,
+		where V : JetView<S>,
 			  V : ComponentActivity {
 	return ActivityDerivedViewProperty(this, derivedViewProducer)
 }
 
-private class ActivityDerivedViewProperty<in V, in S : UiState, out DV : FeatureView<S>>(
+private class ActivityDerivedViewProperty<in V, in S : JetState, out DV : JetView<S>>(
 	activity: V,
 	private val derivedViewProducer: V.() -> DV
 ) : DerivedViewProperty<V, S, DV>, DefaultLifecycleObserver
-		where V : FeatureView<S>,
+		where V : JetView<S>,
 			  V : ComponentActivity {
 
 	private var derivedView: DV? = null

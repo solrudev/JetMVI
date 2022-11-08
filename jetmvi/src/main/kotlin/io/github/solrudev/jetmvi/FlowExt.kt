@@ -8,7 +8,7 @@ internal fun <T> Flow<T>.distinctUntilChangedByKeys(keySelectors: List<(T) -> An
 		return this
 	}
 
-	// skipping unnecessary lengths checks
+	// skipping unnecessary length checks
 	fun keysAreEqual(keys1: Array<Any?>, keys2: Array<Any?>): Boolean {
 		keys1.forEachIndexed { index, key ->
 			if (key != keys2[index]) {

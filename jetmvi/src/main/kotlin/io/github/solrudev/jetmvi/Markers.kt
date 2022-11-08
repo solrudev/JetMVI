@@ -3,14 +3,14 @@ package io.github.solrudev.jetmvi
 /**
  * Marker interface for UI state objects.
  */
-public interface UiState
+public interface JetState
 
 /**
  * Marker interface for events.
  */
-public interface Event
+public interface JetEvent
 
 /**
  * Marker interface for side effects.
  */
-public interface Effect
+public interface JetEffect

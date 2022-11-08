@@ -5,13 +5,13 @@ package io.github.solrudev.jetmvi
  *
  * If event should be ignored, return null.
  */
-public interface EventMapper<in InEvent : Event, out OutEvent : Event?> : (InEvent) -> OutEvent {
+public fun interface JetEventMapper<in InEvent : JetEvent, out OutEvent : JetEvent?> : (InEvent) -> OutEvent {
 	override fun invoke(event: InEvent): OutEvent
 }
 
 /**
- * Transforms UI state of type [InUiState] to UI state of type [OutUiState].
+ * Transforms UI state of type [InState] to UI state of type [OutState].
  */
-public interface UiStateMapper<in InUiState : UiState, out OutUiState : UiState> : (InUiState) -> OutUiState {
-	override fun invoke(uiState: InUiState): OutUiState
+public fun interface JetStateMapper<in InState : JetState, out OutState : JetState> : (InState) -> OutState {
+	override fun invoke(uiState: InState): OutState
 }

@@ -9,32 +9,32 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 /**
- * Launches lifecycle-aware collection of the [Flow] of [UiState] which will re-render view each time
+ * Launches lifecycle-aware collection of the [Flow] of [JetState] which will re-render view each time
  * new state is emitted.
  * @return [Job] of the flow collection.
  */
-public fun <S : UiState, V> Flow<S>.bind(featureView: V): Job
-		where V : FeatureView<S>,
+public fun <S : JetState, V> Flow<S>.bind(jetView: V): Job
+		where V : JetView<S>,
 			  V : ComponentActivity {
-	if (featureView.trackedState === SKIP_RENDER) {
+	if (jetView.trackedState === SKIP_RENDER) {
 		return Job()
 	}
-	return featureView.lifecycleScope.launch {
-		featureView.repeatOnLifecycle(Lifecycle.State.STARTED) {
-			distinctUntilChangedByKeys(featureView.trackedState).collect(featureView::render)
+	return jetView.lifecycleScope.launch {
+		jetView.repeatOnLifecycle(Lifecycle.State.STARTED) {
+			distinctUntilChangedByKeys(jetView.trackedState).collect(jetView::render)
 		}
 	}
 }
 
 /**
- * Launches lifecycle-aware collection of the [Flow] of [UiState] which will re-render derived view each time
+ * Launches lifecycle-aware collection of the [Flow] of [JetState] which will re-render derived view each time
  * new state is emitted.
- * @param parentView parent [FeatureView].
- * @param derivedView [FeatureView] derived from [parentView]. Created with `derivedView` delegate.
+ * @param parentView parent [JetView].
+ * @param derivedView [JetView] derived from [parentView]. Created with `derivedView` delegate.
  * @return [Job] of the flow collection.
  */
-public fun <S : UiState, V> Flow<S>.bindDerived(parentView: V, derivedView: FeatureView<S>): Job
-		where V : FeatureView<S>,
+public fun <S : JetState, V> Flow<S>.bindDerived(parentView: V, derivedView: JetView<S>): Job
+		where V : JetView<S>,
 			  V : ComponentActivity {
 	if (derivedView.trackedState === SKIP_RENDER) {
 		return Job()

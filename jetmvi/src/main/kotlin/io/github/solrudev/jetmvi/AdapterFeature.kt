@@ -7,22 +7,22 @@ import kotlinx.coroutines.flow.map
 
 /**
  * Implementation of [Feature] which receives an [AssemblyFeature] and maps its event and UI state types using provided
- * [EventMapper] and [UiStateMapper].
+ * [JetEventMapper] and [JetStateMapper].
  *
  * @param feature [AssemblyFeature] to transform.
- * @param eventMapper [EventMapper] which transforms from dispatched events type to [feature's][feature] event type.
- * @param uiStateMapper [UiStateMapper] which transforms from [feature's][feature] UI state type to desired UI state
+ * @param eventMapper [JetEventMapper] which transforms from dispatched events type to [feature's][feature] event type.
+ * @param stateMapper [JetStateMapper] which transforms from [feature's][feature] UI state type to desired UI state
  * type.
  */
-public open class AdapterFeature<in InEvent : Event, in InUiState : UiState, in OutEvent : Event, out OutUiState : UiState>(
-	private val feature: AssemblyFeature<InEvent, InUiState>,
-	private val eventMapper: EventMapper<OutEvent, InEvent?>,
-	private val uiStateMapper: UiStateMapper<InUiState, OutUiState>,
-) : Feature<OutEvent, OutUiState> {
+public open class AdapterFeature<in InEvent : JetEvent, in InState : JetState, in OutEvent : JetEvent, out OutState : JetState>(
+	private val feature: AssemblyFeature<InEvent, InState>,
+	private val eventMapper: JetEventMapper<OutEvent, InEvent?>,
+	private val stateMapper: JetStateMapper<InState, OutState>,
+) : Feature<OutEvent, OutState> {
 
-	private val uiState = feature.map(uiStateMapper)
+	private val uiState = feature.map(stateMapper)
 
-	final override suspend fun collect(collector: FlowCollector<OutUiState>) {
+	final override suspend fun collect(collector: FlowCollector<OutState>) {
 		uiState.collect(collector)
 	}
 

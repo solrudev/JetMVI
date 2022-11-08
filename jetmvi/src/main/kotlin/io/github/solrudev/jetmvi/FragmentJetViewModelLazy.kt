@@ -31,13 +31,13 @@ import androidx.lifecycle.viewmodel.CreationExtras
  * @param derivedViewProducer function which returns view derived from this fragment. Derived view will be bound to the
  * created JetViewModel. Derived views are created with [derivedView] delegate.
  */
-public inline fun <reified VM, S : UiState, V> V.jetViewModels(
-	vararg derivedViewProducer: V.() -> FeatureView<S>,
+public inline fun <reified VM, S : JetState, V> V.jetViewModels(
+	vararg derivedViewProducer: V.() -> JetView<S>,
 	noinline ownerProducer: () -> ViewModelStoreOwner = { this },
 	noinline extrasProducer: (() -> CreationExtras)? = null,
 	noinline factoryProducer: (() -> ViewModelProvider.Factory)? = null
 ): Lazy<VM>
-		where V : FeatureView<S>,
+		where V : JetView<S>,
 			  V : Fragment,
 			  VM : ViewModel,
 			  VM : JetViewModel<S> {
@@ -46,12 +46,12 @@ public inline fun <reified VM, S : UiState, V> V.jetViewModels(
 }
 
 @PublishedApi
-internal class FragmentJetViewModelLazy<out VM, S : UiState, in V>(
+internal class FragmentJetViewModelLazy<out VM, S : JetState, in V>(
 	private var fragment: V?,
 	private val viewModelLazy: Lazy<VM>,
-	private var derivedViewProducers: Array<out (V.() -> FeatureView<S>)>
+	private var derivedViewProducers: Array<out (V.() -> JetView<S>)>
 ) : Lazy<VM> by viewModelLazy, DefaultLifecycleObserver
-		where V : FeatureView<S>,
+		where V : JetView<S>,
 			  V : Fragment,
 			  VM : ViewModel,
 			  VM : JetViewModel<S> {
