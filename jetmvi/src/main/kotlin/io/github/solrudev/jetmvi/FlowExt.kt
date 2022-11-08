@@ -22,7 +22,7 @@ internal fun <T> Flow<T>.distinctUntilChangedByKeys(keySelectors: List<(T) -> An
 	}
 }
 
-// skipping unnecessary length checks
+// skipping unnecessary bounds checking
 @Suppress("NOTHING_TO_INLINE")
 private inline fun keysAreEqual(keys1: Array<Any?>, keys2: Array<Any?>): Boolean {
 	keys1.forEachIndexed { index, key ->
