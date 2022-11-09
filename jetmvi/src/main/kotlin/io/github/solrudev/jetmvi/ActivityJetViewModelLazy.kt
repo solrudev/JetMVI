@@ -11,6 +11,8 @@ import androidx.lifecycle.viewmodel.CreationExtras
 /**
  * Returns a property delegate to access [JetViewModel] scoped to this [ComponentActivity] and [binds][bind] it.
  *
+ * It uses Jetpack [viewModels] under the hood.
+ *
  * If you have [derived views][derivedView] in your activity which should be bound to the activity's [JetViewModel],
  * you can [bind][bindDerived] them by passing them to this delegate function.
  *
@@ -30,6 +32,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
  *
  * @param derivedViewProducer function which returns view derived from this activity. Derived view will be bound to the
  * created JetViewModel. Derived views are created with [derivedView] delegate.
+ * @see [viewModels]
  */
 public inline fun <reified VM, S : JetState, V> V.jetViewModels(
 	vararg derivedViewProducer: V.() -> JetView<S>,
