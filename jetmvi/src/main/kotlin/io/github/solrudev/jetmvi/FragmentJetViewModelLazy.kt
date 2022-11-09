@@ -28,6 +28,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
  * )
  * ```
  *
+ * **Do not use in non-UI fragments.**
  * @param derivedViewProducer function which returns view derived from this fragment. Derived view will be bound to the
  * created JetViewModel. Derived views are created with [derivedView] delegate.
  */
@@ -98,10 +99,9 @@ internal class FragmentJetViewModelLazy<out VM, S : JetState, in V>(
 			if (fragment !== f) {
 				return
 			}
-			viewModel.bind(fragment)
-			derivedViewProducers.forEach { derivedViewProducer ->
-				viewModel.bindDerived(fragment, fragment.derivedViewProducer())
-			}
+			viewModel.bind(fragment, derivedViews = Array(derivedViewProducers.size) { index ->
+				derivedViewProducers[index](fragment)
+			})
 		}
 	}
 }

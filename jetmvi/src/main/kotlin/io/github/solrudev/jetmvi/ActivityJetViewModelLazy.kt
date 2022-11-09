@@ -63,10 +63,9 @@ internal class ActivityJetViewModelLazy<out VM, S : JetState, in V>(
 
 	override fun onCreate(owner: LifecycleOwner) {
 		val activity = this.activity ?: return
-		viewModel.bind(activity)
-		derivedViewProducers.forEach { derivedViewProducer ->
-			viewModel.bindDerived(activity, activity.derivedViewProducer())
-		}
+		viewModel.bind(activity, derivedViews = Array(derivedViewProducers.size) { index ->
+			derivedViewProducers[index](activity)
+		})
 	}
 
 	override fun onDestroy(owner: LifecycleOwner) {
