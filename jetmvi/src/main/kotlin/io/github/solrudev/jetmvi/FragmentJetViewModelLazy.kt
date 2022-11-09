@@ -69,7 +69,7 @@ public inline fun <reified VM, S : JetState, V> V.jetViewModels(
  * ```
  *
  * @param derivedViewProducer function which returns view derived from this fragment. Derived view will be bound to the
- * created JetViewModel. Derived views are created with [derivedView] delegate.
+ * returned JetViewModel. Derived views are created with [derivedView] delegate.
  * @see [activityViewModels]
  */
 public inline fun <reified VM, S : JetState, V> V.activityJetViewModels(
