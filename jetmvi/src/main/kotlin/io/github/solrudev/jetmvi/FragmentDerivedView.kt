@@ -1,9 +1,10 @@
 package io.github.solrudev.jetmvi
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import kotlin.reflect.KProperty
 
 /**
@@ -38,15 +39,24 @@ private class FragmentDerivedViewProperty<in V, in S : JetState, out DV : JetVie
 			  V : Fragment {
 
 	private var derivedView: DV? = null
-	private var fragmentManager: FragmentManager? = null
-	private var callback: FragmentManager.FragmentLifecycleCallbacks? = null
+	private var hasView = false
+	private var isViewDestroyed = false
 
-	init {
-		fragment?.lifecycle?.addObserver(this)
+	private val fragmentViewCallback = Observer<LifecycleOwner?> { viewLifecycleOwner ->
+		if (viewLifecycleOwner != null) {
+			hasView = true
+			isViewDestroyed = false
+		} else if (hasView) {
+			derivedView = null
+			isViewDestroyed = true
+		}
 	}
 
-	override fun onCreate(owner: LifecycleOwner) {
-		fragment?.let(::registerViewDestroyedCallback)
+	init {
+		fragment?.let { f ->
+			f.lifecycle.addObserver(this)
+			f.viewLifecycleOwnerLiveData.observeForever(fragmentViewCallback)
+		}
 	}
 
 	override fun onDestroy(owner: LifecycleOwner) {
@@ -63,38 +73,20 @@ private class FragmentDerivedViewProperty<in V, in S : JetState, out DV : JetVie
 		return derivedView ?: thisRef.derivedViewProducer().also { derivedView = it }
 	}
 
-	private fun registerViewDestroyedCallback(fragment: V) {
-		if (this.callback != null) {
-			return
-		}
-		val callback = ViewDestroyedCallback().also { this.callback = it }
-		val fragmentManager = fragment.parentFragmentManager.also { this.fragmentManager = it }
-		fragmentManager.registerFragmentLifecycleCallbacks(callback, false)
-	}
-
 	private fun onDestroy() {
-		fragmentManager?.let { fragmentManager ->
-			callback?.let(fragmentManager::unregisterFragmentLifecycleCallbacks)
-		}
+		fragment?.viewLifecycleOwnerLiveData?.removeObserver(fragmentViewCallback)
 		derivedView = null
 		fragment = null
-		fragmentManager = null
-		callback = null
+		hasView = false
+		isViewDestroyed = false
 	}
 
 	private fun checkFragmentLifecycle(thisRef: V) {
-		if (thisRef.view == null) {
-			error("Accessing derived view in fragment before onViewCreated() or after onDestroyView().")
+		if (thisRef.lifecycle.currentState == Lifecycle.State.DESTROYED) {
+			error("Accessing derived view in fragment when fragment is destroyed.")
 		}
-	}
-
-	private inner class ViewDestroyedCallback : FragmentManager.FragmentLifecycleCallbacks() {
-
-		override fun onFragmentViewDestroyed(fm: FragmentManager, f: Fragment) {
-			if (fragment !== f) {
-				return
-			}
-			derivedView = null
+		if (isViewDestroyed) {
+			error("Accessing derived view in fragment after onDestroyView().")
 		}
 	}
 }

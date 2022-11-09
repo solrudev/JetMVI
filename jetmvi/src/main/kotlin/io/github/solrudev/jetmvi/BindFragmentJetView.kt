@@ -26,7 +26,7 @@ public fun <S : JetState, V> Flow<S>.bind(jetView: V, vararg derivedViews: JetVi
 }
 
 /**
- * Launches lifecycle-aware collection of the [Flow] of [JetState] which will re-render derived view each time
+ * Launches lifecycle-aware collection of the [Flow] of [JetState] which will re-render _only_ derived views each time
  * new state is emitted.
  *
  * **Do not use in non-UI fragments.**
@@ -54,8 +54,23 @@ public fun <S : JetState, V> Flow<S>.bindDerived(parentView: V, vararg derivedVi
  * @param jetView a [JetView] to bind UI state flow to.
  * @return [Job] of the flow collection.
  */
-public fun <S : JetState, V> Flow<S>.bindHeadless(jetView: V): Job
+public fun <S : JetState, V> Flow<S>.bindHeadless(jetView: V, vararg derivedViews: JetView<S>): Job
 		where V : JetView<S>,
 			  V : Fragment {
-	return bind(jetView, emptyArray(), jetView.lifecycleScope, jetView.lifecycle)
+	return bind(jetView, derivedViews, jetView.lifecycleScope, jetView.lifecycle)
+}
+
+/**
+ * Launches lifecycle-aware collection of the [Flow] of [JetState] for non-UI fragment which will re-render _only_
+ * derived views each time new state is emitted.
+ *
+ * **Use only in non-UI fragments, as it doesn't respect fragment's view lifecycle.**
+ * @param parentView parent [JetView].
+ * @param derivedViews views derived from [parentView]. Created with [derivedView] delegate.
+ * @return [Job] of the flow collection.
+ */
+public fun <S : JetState, V> Flow<S>.bindDerivedHeadless(parentView: V, vararg derivedViews: JetView<S>): Job
+		where V : JetView<S>,
+			  V : Fragment {
+	return bind(parentView, derivedViews, parentView.lifecycleScope, parentView.lifecycle, bindParent = false)
 }

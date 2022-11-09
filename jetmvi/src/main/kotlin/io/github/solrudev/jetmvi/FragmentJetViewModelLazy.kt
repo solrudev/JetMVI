@@ -1,9 +1,6 @@
 package io.github.solrudev.jetmvi
 
-import android.os.Bundle
-import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.*
 import androidx.lifecycle.viewmodel.CreationExtras
@@ -28,7 +25,6 @@ import androidx.lifecycle.viewmodel.CreationExtras
  * )
  * ```
  *
- * **Do not use in non-UI fragments.**
  * @param derivedViewProducer function which returns view derived from this fragment. Derived view will be bound to the
  * created JetViewModel. Derived views are created with [derivedView] delegate.
  */
@@ -57,16 +53,31 @@ internal class FragmentJetViewModelLazy<out VM, S : JetState, in V>(
 			  VM : ViewModel,
 			  VM : JetViewModel<S> {
 
-	private val viewModel by viewModelLazy
-	private var fragmentManager: FragmentManager? = null
-	private var callback: FragmentManager.FragmentLifecycleCallbacks? = null
+	private val V.derivedViews: Array<out JetView<S>>
+		get() = Array(derivedViewProducers.size) { index -> derivedViewProducers[index].invoke(this) }
 
-	init {
-		fragment?.lifecycle?.addObserver(this)
+	private val viewModel by viewModelLazy
+	private var isBound = false
+
+	private val bindViewModelCallback = Observer<LifecycleOwner?> { viewLifecycleOwner ->
+		if (viewLifecycleOwner != null) {
+			isBound = true
+			val f = fragment ?: return@Observer
+			viewModel.bind(f, f.derivedViews, viewLifecycleOwner.lifecycleScope, viewLifecycleOwner.lifecycle)
+		}
 	}
 
-	override fun onCreate(owner: LifecycleOwner) {
-		fragment?.let(::registerBindViewModelCallback)
+	init {
+		fragment?.let { f ->
+			f.lifecycle.addObserver(this)
+			f.viewLifecycleOwnerLiveData.observeForever(bindViewModelCallback)
+		}
+	}
+
+	override fun onStart(owner: LifecycleOwner) {
+		if (!isBound) { // may be only if fragment doesn't have a view
+			fragment?.let(::bindHeadless)
+		}
 	}
 
 	override fun onDestroy(owner: LifecycleOwner) {
@@ -74,34 +85,14 @@ internal class FragmentJetViewModelLazy<out VM, S : JetState, in V>(
 		onDestroy()
 	}
 
-	private fun registerBindViewModelCallback(fragment: V) {
-		if (this.callback != null) {
-			return
-		}
-		val callback = BindViewModelCallback().also { this.callback = it }
-		val fragmentManager = fragment.parentFragmentManager.also { this.fragmentManager = it }
-		fragmentManager.registerFragmentLifecycleCallbacks(callback, false)
-	}
-
 	private fun onDestroy() {
-		fragmentManager?.let { fragmentManager ->
-			callback?.let(fragmentManager::unregisterFragmentLifecycleCallbacks)
-		}
+		fragment?.viewLifecycleOwnerLiveData?.removeObserver(bindViewModelCallback)
 		fragment = null
-		fragmentManager = null
-		callback = null
+		isBound = false
 	}
 
-	private inner class BindViewModelCallback : FragmentManager.FragmentLifecycleCallbacks() {
-
-		override fun onFragmentViewCreated(fm: FragmentManager, f: Fragment, v: View, savedInstanceState: Bundle?) {
-			val fragment = this@FragmentJetViewModelLazy.fragment
-			if (fragment !== f) {
-				return
-			}
-			viewModel.bind(fragment, derivedViews = Array(derivedViewProducers.size) { index ->
-				derivedViewProducers[index](fragment)
-			})
-		}
+	private fun bindHeadless(fragment: V) {
+		viewModel.bind(fragment, fragment.derivedViews, fragment.lifecycleScope, fragment.lifecycle)
+		isBound = true
 	}
 }
