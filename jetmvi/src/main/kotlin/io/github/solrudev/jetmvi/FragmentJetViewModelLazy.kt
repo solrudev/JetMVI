@@ -58,11 +58,11 @@ public inline fun <reified VM, S : JetState, V> V.jetViewModels(
  * ```
  * val derivedView1 by derivedView { DerivedView1(viewBinding, viewModel) }
  * val derivedView2 by derivedView { DerivedView2(viewBinding, viewModel) }
- * val viewModel: MyJetViewModel by jetViewModels(MyFragment::derivedView1, MyFragment::derivedView2)
+ * val viewModel: MyJetViewModel by activityJetViewModels(MyFragment::derivedView1, MyFragment::derivedView2)
  * ```
  * or
  * ```
- * val viewModel: MyJetViewModel by jetViewModels(
+ * val viewModel: MyJetViewModel by activityJetViewModels(
  *     { myFragment -> myFragment.derivedView1 },
  *     { myFragment -> myFragment.derivedView2 }
  * )
