@@ -8,9 +8,9 @@ public interface JetView<in S : JetState> {
 	/**
 	 * Properties of [JetState] whose changes are tracked by this view. When this list is empty (it is by default),
 	 * [render] method will be called on every UI state update. Override this to skip render when unrelated properties
-	 * change (may be useful in [derived views][derivedView]).
+	 * change (may be useful with [derived views][derivedView]).
 	 *
-	 * Example:
+	 * **Example of usage:**
 	 * ```
 	 * override val trackedState = listOf(MyUiState::isButtonEnabled, MyUiState::buttonText)
 	 * ```

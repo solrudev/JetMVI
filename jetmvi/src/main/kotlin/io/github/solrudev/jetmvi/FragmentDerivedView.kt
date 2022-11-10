@@ -11,14 +11,29 @@ import kotlin.reflect.KProperty
  * Returns a property delegate for accessing [JetView] which is derived from the current fragment (i.e. sharing
  * its [JetState] and [JetViewModel]).
  *
- * Example:
+ * Derived view reference is released **before** `onDestroy()`, and accessing it after that will throw
+ * [IllegalStateException].
+ *
+ * **For fragment with a view:**
+ *
+ * In fragment with a view, derived view reference will be released when fragment's view is destroyed, and derived view
+ * will be recreated on first access after that (if using [jetViewModels] or [activityJetViewModels] delegate, it
+ * happens automatically when fragment's view is recreated). When accessing derived view after `onDestroyView()` and
+ * before `onCreateView()` returns, this delegate will throw [IllegalStateException].
+ *
+ * **Example of usage:**
  * ```
  * class SomeView(
  *     val viewBinding: MyLayoutBinding,
  *     val viewModel: MyJetViewModel
  * ) : JetView<MyUiState> { ... }
- * ...
- * val someView by derivedView { SomeView(viewBinding, viewModel) }
+ *
+ * class MyFragment : Fragment(), JetView<MyUiState> {
+ *     val someView by derivedView { SomeView(viewBinding!!, viewModel) }
+ *     var viewBinding: MyLayoutBinding? = null
+ *     val viewModel: MyJetViewModel by jetViewModels(MyFragment::someView)
+ *     ...
+ * }
  * ```
  *
  * @param derivedViewProducer function returning derived view. It has parent view as its receiver.

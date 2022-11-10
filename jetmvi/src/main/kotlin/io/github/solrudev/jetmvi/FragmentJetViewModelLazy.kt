@@ -12,9 +12,17 @@ import androidx.lifecycle.viewmodel.CreationExtras
  * It uses Jetpack [viewModels] delegate under the hood.
  *
  * If you have [derived views][derivedView] in your fragment which should be bound to the fragment's [JetViewModel],
- * you can [bind][bindDerived] them by passing them to this delegate function.
+ * you can [bind][bindDerived] them by passing references to them to this delegate function.
  *
- * Example:
+ * **For fragment with a view:**
+ *
+ * If fragment has a view, binding happens after fragment's view is created using fragment's view lifecycle.
+ *
+ * **For fragment without a view:**
+ *
+ * If fragment doesn't have a view, binding happens after fragment's first `onStart()` using fragment's lifecycle.
+ *
+ * **Example of usage:**
  * ```
  * val derivedView1 by derivedView { DerivedView1(viewBinding, viewModel) }
  * val derivedView2 by derivedView { DerivedView2(viewBinding, viewModel) }
@@ -26,7 +34,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
  * ```
  *
  * @param derivedViewProducer function which returns view derived from this fragment. Derived view will be bound to the
- * created JetViewModel. Derived views are created with [derivedView] delegate.
+ * returned JetViewModel. Derived views are created with [derivedView] delegate.
  * @see [viewModels]
  */
 public inline fun <reified VM, S : JetState, V> V.jetViewModels(
@@ -49,9 +57,17 @@ public inline fun <reified VM, S : JetState, V> V.jetViewModels(
  * It uses Jetpack [activityViewModels] delegate under the hood.
  *
  * If you have [derived views][derivedView] in your fragment which should be bound to the fragment's [JetViewModel],
- * you can [bind][bindDerived] them by passing them to this delegate function.
+ * you can [bind][bindDerived] them by passing references to them to this delegate function.
  *
- * Example:
+ * **For fragment with a view:**
+ *
+ * If fragment has a view, binding happens after fragment's view is created using fragment's view lifecycle.
+ *
+ * **For fragment without a view:**
+ *
+ * If fragment doesn't have a view, binding happens after fragment's first `onStart()` using fragment's lifecycle.
+ *
+ * **Example of usage:**
  * ```
  * val derivedView1 by derivedView { DerivedView1(viewBinding, viewModel) }
  * val derivedView2 by derivedView { DerivedView2(viewBinding, viewModel) }

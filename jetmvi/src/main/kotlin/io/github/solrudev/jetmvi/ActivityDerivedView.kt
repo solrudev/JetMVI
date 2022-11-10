@@ -10,14 +10,22 @@ import kotlin.reflect.KProperty
  * Returns a property delegate for accessing [JetView] which is derived from the current activity (i.e. sharing
  * its [JetState] and [JetViewModel]).
  *
- * Example:
+ * Derived view reference is released **before** `onDestroy()`, and accessing it after that will throw
+ * [IllegalStateException].
+ *
+ * **Example of usage:**
  * ```
  * class SomeView(
  *     val viewBinding: MyLayoutBinding,
  *     val viewModel: MyJetViewModel
  * ) : JetView<MyUiState> { ... }
- * ...
- * val someView by derivedView { SomeView(viewBinding, viewModel) }
+ *
+ * class MyActivity : AppCompatActivity(), JetView<MyUiState> {
+ *     val someView by derivedView { SomeView(viewBinding!!, viewModel) }
+ *     lateinit var viewBinding: MyLayoutBinding
+ *     val viewModel: MyJetViewModel by jetViewModels(MyActivity::someView)
+ *     ...
+ * }
  * ```
  *
  * @param derivedViewProducer function returning derived view. It has parent view as its receiver.

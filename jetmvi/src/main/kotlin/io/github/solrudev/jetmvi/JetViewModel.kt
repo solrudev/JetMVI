@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
 /**
- * Only instances of this sealed interface can be obtained from [jetViewModels] delegate.
+ * Only instances of this sealed interface can be obtained from [jetViewModels] and [activityJetViewModels] delegates.
  *
  * Implemented by [FeatureViewModel] and [UDFViewModel].
  */
