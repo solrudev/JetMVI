@@ -68,9 +68,9 @@ private class FragmentDerivedViewProperty<in V, in S : JetState, out DV : JetVie
 	}
 
 	init {
-		fragment?.let { f ->
-			f.lifecycle.addObserver(this)
-			f.viewLifecycleOwnerLiveData.observeForever(fragmentViewCallback)
+		this.fragment?.let { fragment ->
+			fragment.lifecycle.addObserver(this)
+			fragment.viewLifecycleOwnerLiveData.observeForever(fragmentViewCallback)
 		}
 	}
 
