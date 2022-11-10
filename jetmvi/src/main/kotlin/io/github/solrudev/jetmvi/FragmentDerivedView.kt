@@ -1,10 +1,7 @@
 package io.github.solrudev.jetmvi
 
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
+import androidx.lifecycle.*
 import kotlin.reflect.KProperty
 
 /**
@@ -43,15 +40,14 @@ public fun <DV : JetView<S>, S : JetState, V> V.derivedView(
 ): DerivedViewProperty<V, S, DV>
 		where V : JetView<S>,
 			  V : Fragment {
-	return FragmentDerivedViewProperty(this, derivedViewProducer)
+	return FragmentDerivedViewProperty(this, derivedViewProducer, viewLifecycleOwnerLiveData)
 }
 
-private class FragmentDerivedViewProperty<in V, in S : JetState, out DV : JetView<S>>(
-	private var fragment: V?,
-	private val derivedViewProducer: V.() -> DV
-) : DerivedViewProperty<V, S, DV>, DefaultLifecycleObserver
-		where V : JetView<S>,
-			  V : Fragment {
+private class FragmentDerivedViewProperty<in V : LifecycleOwner, in S : JetState, out DV : JetView<S>>(
+	fragment: LifecycleOwner,
+	private val derivedViewProducer: V.() -> DV,
+	private var viewLifecycleOwnerLiveData: LiveData<LifecycleOwner?>?
+) : DerivedViewProperty<V, S, DV>, DefaultLifecycleObserver {
 
 	private var derivedView: DV? = null
 	private var hasView = false
@@ -68,10 +64,8 @@ private class FragmentDerivedViewProperty<in V, in S : JetState, out DV : JetVie
 	}
 
 	init {
-		this.fragment?.let { fragment ->
-			fragment.lifecycle.addObserver(this)
-			fragment.viewLifecycleOwnerLiveData.observeForever(fragmentViewCallback)
-		}
+		fragment.lifecycle.addObserver(this)
+		viewLifecycleOwnerLiveData?.observeForever(fragmentViewCallback)
 	}
 
 	override fun onDestroy(owner: LifecycleOwner) {
@@ -89,9 +83,9 @@ private class FragmentDerivedViewProperty<in V, in S : JetState, out DV : JetVie
 	}
 
 	private fun onDestroy() {
-		fragment?.viewLifecycleOwnerLiveData?.removeObserver(fragmentViewCallback)
 		derivedView = null
-		fragment = null
+		viewLifecycleOwnerLiveData?.removeObserver(fragmentViewCallback)
+		viewLifecycleOwnerLiveData = null
 		hasView = false
 		isViewDestroyed = false
 	}

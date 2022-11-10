@@ -38,12 +38,10 @@ public fun <DV : JetView<S>, S : JetState, V> V.derivedView(
 	return ActivityDerivedViewProperty(this, derivedViewProducer)
 }
 
-private class ActivityDerivedViewProperty<in V, in S : JetState, out DV : JetView<S>>(
-	activity: V,
+private class ActivityDerivedViewProperty<in V : LifecycleOwner, in S : JetState, out DV : JetView<S>>(
+	activity: LifecycleOwner,
 	private val derivedViewProducer: V.() -> DV
-) : DerivedViewProperty<V, S, DV>, DefaultLifecycleObserver
-		where V : JetView<S>,
-			  V : ComponentActivity {
+) : DerivedViewProperty<V, S, DV>, DefaultLifecycleObserver {
 
 	private var derivedView: DV? = null
 

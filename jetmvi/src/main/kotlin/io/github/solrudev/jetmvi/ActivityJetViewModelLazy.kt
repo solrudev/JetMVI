@@ -4,6 +4,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import androidx.lifecycle.*
 import androidx.lifecycle.viewmodel.CreationExtras
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Returns a property delegate to access [JetViewModel] scoped to this [ComponentActivity] and [binds][bind] it.
@@ -42,15 +43,13 @@ public inline fun <reified VM, S : JetState, V> V.jetViewModels(
 }
 
 @PublishedApi
-internal class ActivityJetViewModelLazy<out VM, S : JetState, in V>(
+internal class ActivityJetViewModelLazy<out VM : Flow<S>, S : JetState, in V>(
 	private var activity: V?,
 	private val viewModelLazy: Lazy<VM>,
 	private var derivedViewProducers: Array<out (V.() -> JetView<S>)>
 ) : Lazy<VM> by viewModelLazy, DefaultLifecycleObserver
 		where V : JetView<S>,
-			  V : ComponentActivity,
-			  VM : ViewModel,
-			  VM : JetViewModel<S> {
+			  V : LifecycleOwner {
 
 	private val V.derivedViews: Array<out JetView<S>>
 		get() = Array(derivedViewProducers.size) { index -> derivedViewProducers[index].invoke(this) }
