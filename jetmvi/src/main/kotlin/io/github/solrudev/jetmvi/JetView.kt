@@ -27,7 +27,7 @@ public interface JetView<in S : JetState> {
 /**
  * [JetView] which only hosts [derived views][derivedView] and doesn't render anything itself.
  *
- * [Binding][bind] this view is a no-op (unless [trackedState] is overridden).
+ * [Binding][bind] this view will not trigger [render] (unless [trackedState] is overridden).
  */
 public interface HostJetView<in S : JetState> : JetView<S> {
 
