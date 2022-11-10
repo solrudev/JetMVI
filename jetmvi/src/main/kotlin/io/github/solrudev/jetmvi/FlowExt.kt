@@ -3,6 +3,10 @@ package io.github.solrudev.jetmvi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 
+/**
+ * Returns flow where all subsequent repetitions of the same keys are filtered out, where keys are extracted with
+ * [keySelectors] functions.
+ */
 internal fun <T> Flow<T>.distinctUntilChangedByKeys(keySelectors: List<(T) -> Any?>): Flow<T> {
 	if (keySelectors.isEmpty()) {
 		return this
