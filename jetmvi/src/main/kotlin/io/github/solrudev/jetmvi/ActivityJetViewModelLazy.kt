@@ -21,10 +21,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
  * ```
  * or
  * ```
- * val viewModel: MyJetViewModel by jetViewModels(
- *     { myActivity -> myActivity.derivedView1 },
- *     { myActivity -> myActivity.derivedView2 }
- * )
+ * val viewModel: MyJetViewModel by jetViewModels({ derivedView1 }, { derivedView2 })
  * ```
  *
  * @param derivedViewProducer function which returns view derived from this activity. Derived view will be bound to the

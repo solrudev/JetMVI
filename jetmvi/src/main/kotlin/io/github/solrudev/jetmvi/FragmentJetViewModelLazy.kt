@@ -22,10 +22,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
  * ```
  * or
  * ```
- * val viewModel: MyJetViewModel by jetViewModels(
- *     { myFragment -> myFragment.derivedView1 },
- *     { myFragment -> myFragment.derivedView2 }
- * )
+ * val viewModel: MyJetViewModel by jetViewModels({ derivedView1 }, { derivedView2 })
  * ```
  *
  * @param derivedViewProducer function which returns view derived from this fragment. Derived view will be bound to the
@@ -62,10 +59,7 @@ public inline fun <reified VM, S : JetState, V> V.jetViewModels(
  * ```
  * or
  * ```
- * val viewModel: MyJetViewModel by activityJetViewModels(
- *     { myFragment -> myFragment.derivedView1 },
- *     { myFragment -> myFragment.derivedView2 }
- * )
+ * val viewModel: MyJetViewModel by activityJetViewModels({ derivedView1 }, { derivedView2 })
  * ```
  *
  * @param derivedViewProducer function which returns view derived from this fragment. Derived view will be bound to the
