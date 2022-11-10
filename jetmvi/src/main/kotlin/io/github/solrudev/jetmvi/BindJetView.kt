@@ -1,8 +1,8 @@
 package io.github.solrudev.jetmvi
 
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.repeatOnLifecycle
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -11,15 +11,14 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 /**
- * Launches views rendering of this [JetState] flow in the given [scope] with [lifecycle].
+ * Launches views rendering of this [JetState] flow with the given [lifecycle].
  */
 internal fun <S : JetState> Flow<S>.bind(
 	parentView: JetView<S>,
 	derivedViews: Array<out JetView<S>>,
-	scope: CoroutineScope,
 	lifecycle: Lifecycle,
 	bindParent: Boolean = true
-): Job = scope.launch {
+): Job = lifecycle.coroutineScope.launch {
 	lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
 		if (bindParent) {
 			renderWith(parentView).launchIn(this)

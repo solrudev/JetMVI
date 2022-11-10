@@ -1,7 +1,6 @@
 package io.github.solrudev.jetmvi
 
 import androidx.activity.ComponentActivity
-import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 
@@ -18,7 +17,7 @@ import kotlinx.coroutines.flow.Flow
 public fun <S : JetState, V> Flow<S>.bind(jetView: V, vararg derivedViews: JetView<S>): Job
 		where V : JetView<S>,
 			  V : ComponentActivity {
-	return bind(jetView, derivedViews, jetView.lifecycleScope, jetView.lifecycle)
+	return bind(jetView, derivedViews, jetView.lifecycle)
 }
 
 /**
@@ -34,5 +33,5 @@ public fun <S : JetState, V> Flow<S>.bind(jetView: V, vararg derivedViews: JetVi
 public fun <S : JetState, V> Flow<S>.bindDerived(parentView: V, vararg derivedViews: JetView<S>): Job
 		where V : JetView<S>,
 			  V : ComponentActivity {
-	return bind(parentView, derivedViews, parentView.lifecycleScope, parentView.lifecycle, bindParent = false)
+	return bind(parentView, derivedViews, parentView.lifecycle, bindParent = false)
 }

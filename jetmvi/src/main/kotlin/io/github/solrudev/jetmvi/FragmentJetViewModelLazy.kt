@@ -116,12 +116,7 @@ internal class FragmentJetViewModelLazy<out VM : Flow<S>, S : JetState, in V>(
 		if (viewLifecycleOwner != null) {
 			val fragment = this.fragment ?: return@Observer
 			isBound = true
-			viewModel.bind(
-				fragment,
-				fragment.derivedViews,
-				viewLifecycleOwner.lifecycleScope,
-				viewLifecycleOwner.lifecycle
-			)
+			viewModel.bind(fragment, fragment.derivedViews, viewLifecycleOwner.lifecycle)
 		}
 	}
 
@@ -150,7 +145,7 @@ internal class FragmentJetViewModelLazy<out VM : Flow<S>, S : JetState, in V>(
 	}
 
 	private fun bindHeadless(fragment: V) {
-		viewModel.bind(fragment, fragment.derivedViews, fragment.lifecycleScope, fragment.lifecycle)
+		viewModel.bind(fragment, fragment.derivedViews, fragment.lifecycle)
 		isBound = true
 	}
 }

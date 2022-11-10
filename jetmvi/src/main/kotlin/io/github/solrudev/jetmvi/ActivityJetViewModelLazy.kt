@@ -2,7 +2,10 @@ package io.github.solrudev.jetmvi
 
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
-import androidx.lifecycle.*
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
 import kotlinx.coroutines.flow.Flow
 
@@ -62,7 +65,7 @@ internal class ActivityJetViewModelLazy<out VM : Flow<S>, S : JetState, in V>(
 
 	override fun onCreate(owner: LifecycleOwner) {
 		val activity = this.activity ?: return
-		viewModel.bind(activity, activity.derivedViews, activity.lifecycleScope, activity.lifecycle)
+		viewModel.bind(activity, activity.derivedViews, activity.lifecycle)
 	}
 
 	override fun onDestroy(owner: LifecycleOwner) {

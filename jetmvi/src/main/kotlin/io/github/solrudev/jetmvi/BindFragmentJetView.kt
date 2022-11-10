@@ -2,7 +2,6 @@ package io.github.solrudev.jetmvi
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 
@@ -21,12 +20,7 @@ import kotlinx.coroutines.flow.Flow
 public fun <S : JetState, V> Flow<S>.bind(jetView: V, vararg derivedViews: JetView<S>): Job
 		where V : JetView<S>,
 			  V : Fragment {
-	return bind(
-		jetView,
-		derivedViews,
-		jetView.viewLifecycleOwner.lifecycleScope,
-		jetView.viewLifecycleOwner.lifecycle
-	)
+	return bind(jetView, derivedViews, jetView.viewLifecycleOwner.lifecycle)
 }
 
 /**
@@ -45,13 +39,7 @@ public fun <S : JetState, V> Flow<S>.bind(jetView: V, vararg derivedViews: JetVi
 public fun <S : JetState, V> Flow<S>.bindDerived(parentView: V, vararg derivedViews: JetView<S>): Job
 		where V : JetView<S>,
 			  V : Fragment {
-	return bind(
-		parentView,
-		derivedViews,
-		parentView.viewLifecycleOwner.lifecycleScope,
-		parentView.viewLifecycleOwner.lifecycle,
-		bindParent = false
-	)
+	return bind(parentView, derivedViews, parentView.viewLifecycleOwner.lifecycle, bindParent = false)
 }
 
 /**
@@ -69,7 +57,7 @@ public fun <S : JetState, V> Flow<S>.bindDerived(parentView: V, vararg derivedVi
 public fun <S : JetState, V> Flow<S>.bindHeadless(jetView: V, vararg derivedViews: JetView<S>): Job
 		where V : JetView<S>,
 			  V : Fragment {
-	return bind(jetView, derivedViews, jetView.lifecycleScope, jetView.lifecycle)
+	return bind(jetView, derivedViews, jetView.lifecycle)
 }
 
 /**
@@ -88,5 +76,5 @@ public fun <S : JetState, V> Flow<S>.bindHeadless(jetView: V, vararg derivedView
 public fun <S : JetState, V> Flow<S>.bindDerivedHeadless(parentView: V, vararg derivedViews: JetView<S>): Job
 		where V : JetView<S>,
 			  V : Fragment {
-	return bind(parentView, derivedViews, parentView.lifecycleScope, parentView.lifecycle, bindParent = false)
+	return bind(parentView, derivedViews, parentView.lifecycle, bindParent = false)
 }
