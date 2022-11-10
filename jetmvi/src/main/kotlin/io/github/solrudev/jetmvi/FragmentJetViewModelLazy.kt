@@ -98,16 +98,21 @@ internal class FragmentJetViewModelLazy<out VM, S : JetState, in V>(
 
 	private val bindViewModelCallback = Observer<LifecycleOwner?> { viewLifecycleOwner ->
 		if (viewLifecycleOwner != null) {
+			val fragment = this.fragment ?: return@Observer
 			isBound = true
-			val f = fragment ?: return@Observer
-			viewModel.bind(f, f.derivedViews, viewLifecycleOwner.lifecycleScope, viewLifecycleOwner.lifecycle)
+			viewModel.bind(
+				fragment,
+				fragment.derivedViews,
+				viewLifecycleOwner.lifecycleScope,
+				viewLifecycleOwner.lifecycle
+			)
 		}
 	}
 
 	init {
-		fragment?.let { f ->
-			f.lifecycle.addObserver(this)
-			f.viewLifecycleOwnerLiveData.observeForever(bindViewModelCallback)
+		this.fragment?.let { fragment ->
+			fragment.lifecycle.addObserver(this)
+			fragment.viewLifecycleOwnerLiveData.observeForever(bindViewModelCallback)
 		}
 	}
 
@@ -125,6 +130,7 @@ internal class FragmentJetViewModelLazy<out VM, S : JetState, in V>(
 	private fun onDestroy() {
 		fragment?.viewLifecycleOwnerLiveData?.removeObserver(bindViewModelCallback)
 		fragment = null
+		derivedViewProducers = emptyArray()
 		isBound = false
 	}
 
