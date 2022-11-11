@@ -21,7 +21,7 @@ import kotlin.reflect.KProperty
  * ) : JetView<MyUiState> { ... }
  *
  * class MyActivity : AppCompatActivity(), JetView<MyUiState> {
- *     val someView by derivedView { SomeView(viewBinding!!, viewModel) }
+ *     val someView by derivedView { SomeView(viewBinding, viewModel) }
  *     lateinit var viewBinding: MyLayoutBinding
  *     val viewModel: MyJetViewModel by jetViewModels(MyActivity::someView)
  *     ...
