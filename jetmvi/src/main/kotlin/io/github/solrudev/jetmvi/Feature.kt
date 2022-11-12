@@ -10,6 +10,8 @@ import kotlinx.coroutines.launch
  * An object which represents a single complete feature of an app.
  *
  * Implements [Flow] of [JetState], so it can be collected to receive UI state updates.
+ *
+ * Has [AssemblyFeature] and [AdapterFeature] implementations.
  */
 public sealed interface Feature<in E : JetEvent, out S : JetState> : Flow<S> {
 
