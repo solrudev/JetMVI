@@ -29,7 +29,7 @@ public sealed interface Feature<in E : JetEvent, out S : JetState> : Flow<S> {
 /**
  * Standard implementation of [Feature] which assembles [Middlewares][Middleware] and [Reducer] together.
  */
-public open class AssemblyFeature<E : JetEvent, S : JetState> private constructor(
+public open class AssemblyFeature<in E : JetEvent, out S : JetState> private constructor(
 	private val middlewares: List<Middleware<E>>,
 	private val reducer: Reducer<E, S>,
 	private val uiState: MutableStateFlow<S>
