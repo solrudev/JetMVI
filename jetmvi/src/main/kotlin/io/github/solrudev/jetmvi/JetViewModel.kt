@@ -3,7 +3,6 @@ package io.github.solrudev.jetmvi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
@@ -48,19 +47,17 @@ public abstract class FeatureViewModel<in E : JetEvent, out S : JetState>(
  * }
  * ```
  */
-public abstract class UDFViewModel<S : JetState>(initialUiState: S) : ViewModel(), JetViewModel<S> {
+public abstract class UDFViewModel<S : JetState> private constructor(
+	private val uiState: MutableStateFlow<S>
+) : ViewModel(), JetViewModel<S>, Flow<S> by uiState {
 
-	private val uiState = MutableStateFlow(initialUiState)
+	public constructor(initialUiState: S) : this(MutableStateFlow(initialUiState))
 
 	/**
 	 * Returns latest cached UI state.
 	 */
 	protected val currentState: S
 		get() = uiState.value
-
-	final override suspend fun collect(collector: FlowCollector<S>) {
-		uiState.collect(collector)
-	}
 
 	/**
 	 * Atomically updates UI state with the value returned from [reducer].
