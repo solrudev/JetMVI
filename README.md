@@ -11,7 +11,7 @@ Supports both Redux-like and MVVM+ approaches.
 
 **In development. API is unstable and is subject to change.**
 
-[Sample usage](https://github.com/solrudev/OkkeiPatcher/tree/master/app/src/main/kotlin/ru/solrudev/okkeipatcher/ui/screen/home)
+[Sample usage](https://github.com/solrudev/OkkeiPatcher/tree/master/app/src/main/kotlin/ru/solrudev/okkeipatcher/ui/main/screen/home)
 
 ```kotlin
 implementation("io.github.solrudev:jetmvi:x.y.z")
