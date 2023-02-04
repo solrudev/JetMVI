@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+
 val publishGroupId: String by rootProject.extra
 val publishVersion: String by rootProject.extra
 val publishArtifactId = "jetmvi"
@@ -36,10 +39,12 @@ android {
 		sourceCompatibility = JavaVersion.VERSION_1_8
 		targetCompatibility = JavaVersion.VERSION_1_8
 	}
+}
 
-	kotlinOptions {
-		jvmTarget = "1.8"
-		freeCompilerArgs += listOf("-Xexplicit-api=strict", "-Xjvm-default=all")
+tasks.withType(KotlinJvmCompile::class) {
+	compilerOptions {
+		jvmTarget.set(JVM_1_8)
+		freeCompilerArgs.addAll("-Xexplicit-api=strict", "-Xjvm-default=all")
 	}
 }
 
