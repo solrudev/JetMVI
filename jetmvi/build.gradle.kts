@@ -51,7 +51,7 @@ tasks.withType(KotlinJvmCompile::class) {
 dependencies {
 	api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
 	api("androidx.activity:activity-ktx:1.6.1")
-	api("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
+	api("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0")
 	api("androidx.fragment:fragment-ktx:1.5.5")
 }
 
