@@ -41,7 +41,7 @@ android {
 	}
 }
 
-tasks.withType(KotlinJvmCompile::class) {
+tasks.withType<KotlinJvmCompile> {
 	compilerOptions {
 		jvmTarget.set(JVM_1_8)
 		freeCompilerArgs.addAll("-Xexplicit-api=strict", "-Xjvm-default=all")
