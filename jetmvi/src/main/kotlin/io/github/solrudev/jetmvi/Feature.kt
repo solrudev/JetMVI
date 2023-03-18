@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
  *
  * Implements [Flow] of [JetState], so it can be collected to receive UI state updates.
  *
- * Has [BaseFeature] and [AdapterFeature] implementations.
+ * Has [JetFeature] and [AdapterFeature] implementations.
  */
 public sealed interface Feature<in E : JetEvent, out S : JetState> : Flow<S> {
 
@@ -31,7 +31,7 @@ public sealed interface Feature<in E : JetEvent, out S : JetState> : Flow<S> {
 /**
  * Standard implementation of [Feature] which assembles [Middlewares][Middleware] and [Reducer] together.
  */
-public open class BaseFeature<in E : JetEvent, out S : JetState> private constructor(
+public open class JetFeature<in E : JetEvent, out S : JetState> private constructor(
 	private val middlewares: List<Middleware<E>>,
 	private val reducer: Reducer<E, S>,
 	private val uiState: MutableStateFlow<S>
