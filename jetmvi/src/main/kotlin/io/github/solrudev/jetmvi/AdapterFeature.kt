@@ -8,7 +8,8 @@ import kotlinx.coroutines.flow.map
 /**
  * Wraps a [Feature] and maps its event and UI state types using provided mappers.
  * @param eventMapper function which transforms from dispatched events type to feature's event type.
- * @param stateMapper function which transforms from feature's UI state type to desired UI state
+ * Return null if event must be ignored.
+ * @param stateMapper function which transforms from feature's UI state type to desired UI state.
  */
 public fun <InEvent : JetEvent, InState : JetState, OutEvent : JetEvent, OutState : JetState> Feature<InEvent, InState>.wrap(
 	eventMapper: (OutEvent) -> InEvent?,
@@ -20,6 +21,7 @@ public fun <InEvent : JetEvent, InState : JetState, OutEvent : JetEvent, OutStat
 /**
  * Wraps a [Feature] and maps its event type using provided mapper.
  * @param eventMapper function which transforms from dispatched events type to feature's event type.
+ * Return null if event must be ignored.
  */
 @JvmName("wrapEvent")
 public fun <InEvent : JetEvent, OutEvent : JetEvent, State : JetState> Feature<InEvent, State>.wrap(
@@ -30,7 +32,7 @@ public fun <InEvent : JetEvent, OutEvent : JetEvent, State : JetState> Feature<I
 
 /**
  * Wraps a [Feature] and maps its UI state type using provided mapper.
- * @param stateMapper function which transforms from feature's UI state type to desired UI state
+ * @param stateMapper function which transforms from feature's UI state type to desired UI state.
  */
 @JvmName("wrapState")
 public fun <Event : JetEvent, InState : JetState, OutState : JetState> Feature<Event, InState>.wrap(
@@ -44,7 +46,8 @@ public fun <Event : JetEvent, InState : JetState, OutState : JetState> Feature<E
  *
  * @param feature [Feature] to wrap.
  * @param eventMapper function which transforms from dispatched events type to [feature's][feature] event type.
- * @param stateMapper function which transforms from [feature's][feature] UI state type to desired UI state
+ * Return null if event must be ignored.
+ * @param stateMapper function which transforms from [feature's][feature] UI state type to desired UI state.
  * type.
  */
 private class AdapterFeature<in InEvent : JetEvent, in InState : JetState, in OutEvent : JetEvent, out OutState : JetState>(
