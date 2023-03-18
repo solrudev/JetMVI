@@ -77,6 +77,18 @@ public class MiddlewareScope<E : JetEvent> internal constructor(
 	public inline fun <reified E : JetEvent> onEvent(collector: FlowCollector<E>): Job = launch {
 		conflate().collectEvent(collector)
 	}
+
+	/**
+	 * Launches a new coroutine which invokes [action] every time an event of type [E] is emitted from input events
+	 * flow. Input events flow is [conflated][conflate].
+	 *
+	 * The difference from [onEvent] is that when the input events flow emits a new event of type [E], [action] block
+	 * for the previous event is canceled.
+	 * @return [Job] of the coroutine.
+	 */
+	public inline fun <reified E : JetEvent> onEventLatest(noinline action: suspend (E) -> Unit): Job = launch {
+		conflate().collectEventLatest(action)
+	}
 }
 
 /**
@@ -84,4 +96,14 @@ public class MiddlewareScope<E : JetEvent> internal constructor(
  */
 public suspend inline fun <reified E : JetEvent> Flow<JetEvent>.collectEvent(collector: FlowCollector<E>) {
 	filterIsInstance<E>().collect(collector)
+}
+
+/**
+ * Terminal flow operator which collects only events of type [E] from events flow with provided [action].
+ *
+ * The difference from [collectEvent] is that when the events flow emits a new event of type [E], [action] block for the
+ * previous event is canceled.
+ */
+public suspend inline fun <reified E : JetEvent> Flow<JetEvent>.collectEventLatest(noinline action: suspend (E) -> Unit) {
+	filterIsInstance<E>().collectLatest(action)
 }
