@@ -1,7 +1,7 @@
 import java.util.*
 
 val publishGroupId by extra("io.github.solrudev")
-val publishVersion by extra("0.1.5-SNAPSHOT")
+val publishVersion by extra("0.1.5")
 group = publishGroupId
 version = publishVersion
 
