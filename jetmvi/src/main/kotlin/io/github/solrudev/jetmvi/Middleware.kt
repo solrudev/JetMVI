@@ -1,6 +1,7 @@
 package io.github.solrudev.jetmvi
 
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -58,7 +59,7 @@ public fun interface JetMiddleware<E : JetEvent> : Middleware<E> {
 		with(MiddlewareScope(events, producerScope = this@producerScope)) {
 			apply()
 		}
-	}
+	}.buffer(Channel.RENDEZVOUS)
 }
 
 /**
