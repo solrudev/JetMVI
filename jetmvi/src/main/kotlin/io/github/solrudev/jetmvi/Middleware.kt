@@ -80,14 +80,14 @@ public class MiddlewareScope<E : JetEvent> internal constructor(
 
 	/**
 	 * Launches a new coroutine which invokes [action] every time an event of type [E] is emitted from input events
-	 * flow. Input events flow is [conflated][conflate].
+	 * flow.
 	 *
 	 * The difference from [onEvent] is that when the input events flow emits a new event of type [E], [action] block
 	 * for the previous event is canceled.
 	 * @return [Job] of the coroutine.
 	 */
 	public inline fun <reified E : JetEvent> onEventLatest(noinline action: suspend (E) -> Unit): Job = launch {
-		conflate().collectEventLatest(action)
+		collectEventLatest(action)
 	}
 }
 
