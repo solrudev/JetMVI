@@ -1,12 +1,17 @@
 import java.util.*
 
 val publishGroupId by extra("io.github.solrudev")
-val publishVersion by extra("0.1.4")
+val publishVersion by extra("0.1.5-SNAPSHOT")
 group = publishGroupId
 version = publishVersion
 
 plugins {
 	id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
+	id("org.jetbrains.dokka") version "1.8.10"
+}
+
+subprojects {
+	apply(plugin = "org.jetbrains.dokka")
 }
 
 buildscript {
