@@ -42,7 +42,7 @@ public fun <Event : JetEvent, InState : JetState, OutState : JetState> Feature<E
 }
 
 /**
- * Implementation of [Feature] which receives an [Feature] and maps its event and UI state types using provided mappers.
+ * Implementation of [Feature] which receives a [Feature] and maps its event and UI state types using provided mappers.
  *
  * @param feature [Feature] to wrap.
  * @param eventMapper function which transforms from dispatched events type to [feature's][feature] event type.
