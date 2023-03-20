@@ -6,33 +6,33 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 /**
- * Allows to intercept events from a [Feature], perform side effects and emit additional events.
+ * Allows to perform side effects by intercepting, consuming and producing events inside of a [Feature].
  */
 public fun interface Middleware<E : JetEvent> {
 
 	/**
-	 * Applies this middleware to an events flow.
+	 * Returns transformed events flow.
 	 */
 	public fun apply(events: Flow<E>): Flow<E>
 }
 
 /**
- * Allows events to be intercepted from a [Feature], consumed and produced via [MiddlewareScope].
+ * Allows to perform side effects by intercepting, consuming and producing events inside of a [Feature] via
+ * [MiddlewareScope].
  *
  * Example:
  * ```
- * val middleware = JetMiddleware { // this: MiddlewareScope<E>
- *     launch {
- *         filterIsInstance<DataProcessingRequested>()
- *             .map { event -> event.payload }
- *             .filter { payload -> payload.isProcessingAllowed }
- *             .map { payload ->
- *                 val data = doSomething(payload)
- *                 DataProcessed(data, payload.id)
- *             }
- *             .onEach(::send)
- *     }
- *     // or using onEvent()
+ * val middleware = JetMiddleware { // this: MiddlewareScope = Flow of events + ProducerScope
+ *     filterIsInstance<DataProcessingRequested>()
+ *         .map { event -> event.payload }
+ *         .filter { payload -> payload.isProcessingAllowed }
+ *         .map { payload ->
+ *             val data = doSomething(payload)
+ *             DataProcessed(data, payload.id)
+ *         }
+ *         .onEach(::send)
+ *         .launchIn(this)
+ *     // using onEvent() or onEventLatest()
  *     onEvent<DataProcessingRequested> { event ->
  *         if (event.payload.isProcessingAllowed) {
  *             val data = doSomething(event.payload)
@@ -41,8 +41,8 @@ public fun interface Middleware<E : JetEvent> {
  *     }
  *     // it's possible to launch multiple flows with side effects
  *     onEvent<ButtonClicked> { event ->
- *         val newFlagValue = toggleFlag()
- *         send(FlagToggled(newFlagValue))
+ *         val newFlagValue = toggleFlag(event.id)
+ *         send(FlagToggled(newFlagValue, event.id))
  *     }
  * }
  * ```
@@ -50,7 +50,7 @@ public fun interface Middleware<E : JetEvent> {
 public fun interface JetMiddleware<E : JetEvent> : Middleware<E> {
 
 	/**
-	 * Applies this middleware to an events flow.
+	 * Sets up side effects and events flow transformations.
 	 */
 	public fun MiddlewareScope<E>.apply()
 
@@ -83,7 +83,8 @@ public class MiddlewareScope<E : JetEvent> internal constructor(
 	 * flow.
 	 *
 	 * The difference from [onEvent] is that when the input events flow emits a new event of type [E], [action] block
-	 * for the previous event is canceled.
+	 * for the previous event is canceled. It is useful when the event starts to collect some flow that shouldn't have
+	 * multiple parallel collectors.
 	 * @return [Job] of the coroutine.
 	 */
 	public inline fun <reified E : JetEvent> onEventLatest(noinline action: suspend (E) -> Unit): Job = launch {
