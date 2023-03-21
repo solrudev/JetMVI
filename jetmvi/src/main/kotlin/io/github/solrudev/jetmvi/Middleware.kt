@@ -56,9 +56,7 @@ public fun interface JetMiddleware<E : JetEvent> : Middleware<E> {
 	public fun MiddlewareScope<E>.apply()
 
 	override fun apply(events: Flow<E>): Flow<E> = channelFlow producerScope@{
-		with(MiddlewareScope(events, producerScope = this@producerScope)) {
-			apply()
-		}
+		MiddlewareScope(events, producerScope = this@producerScope).apply()
 	}.buffer(Channel.RENDEZVOUS)
 }
 
