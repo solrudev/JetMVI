@@ -21,7 +21,7 @@ public fun interface Middleware<E : JetEvent> {
  * Allows to perform side effects by intercepting, consuming and producing events inside of a [Feature] via
  * [MiddlewareScope].
  *
- * Example:
+ * **Example:**
  * ```
  * val middleware = JetMiddleware { // this: MiddlewareScope = Flow of events + ProducerScope
  *     filterIsInstance<DataProcessingRequested>()
