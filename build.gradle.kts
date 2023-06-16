@@ -1,4 +1,4 @@
-import java.util.*
+import java.util.Properties
 
 val publishGroupId by extra("io.github.solrudev")
 val publishVersion by extra("0.1.5")
@@ -6,8 +6,8 @@ group = publishGroupId
 version = publishVersion
 
 plugins {
-	id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
-	id("org.jetbrains.dokka") version "1.8.10"
+	id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
+	id("org.jetbrains.dokka") version "1.8.20"
 }
 
 subprojects {
@@ -15,20 +15,9 @@ subprojects {
 }
 
 buildscript {
-	repositories {
-		google()
-		mavenCentral()
-	}
 	dependencies {
-		classpath("com.android.tools.build:gradle:7.4.2")
-		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.10")
-	}
-}
-
-allprojects {
-	repositories {
-		google()
-		mavenCentral()
+		classpath("com.android.tools.build:gradle:8.0.2")
+		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.22")
 	}
 }
 
@@ -43,9 +32,9 @@ extra["signing.keyId"] = ""
 extra["signing.password"] = ""
 extra["signing.key"] = ""
 
-val secretPropertiesFile = project.rootProject.file("local.properties")
+val secretPropertiesFile = file("local.properties")
 if (secretPropertiesFile.exists()) {
-	with(Properties()) {
+	Properties().run {
 		secretPropertiesFile.inputStream().use(::load)
 		forEach { name, value -> extra[name as String] = value }
 	}
@@ -59,7 +48,7 @@ extra["signing.password"] = System.getenv("SIGNING_PASSWORD") ?: extra["signing.
 extra["signing.key"] = System.getenv("SIGNING_KEY") ?: extra["signing.key"]
 
 nexusPublishing {
-	repositories {
+	this.repositories {
 		sonatype {
 			stagingProfileId.set(sonatypeStagingProfileId)
 			username.set(ossrhUsername)

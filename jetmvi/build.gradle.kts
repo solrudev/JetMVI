@@ -12,9 +12,13 @@ plugins {
 	signing
 }
 
+kotlin {
+	jvmToolchain(17)
+}
+
 android {
 	compileSdk = 33
-	buildToolsVersion = "33.0.0"
+	buildToolsVersion = "33.0.2"
 	namespace = "$publishGroupId.$publishArtifactId"
 
 	publishing {
@@ -49,10 +53,10 @@ tasks.withType<KotlinJvmCompile> {
 }
 
 dependencies {
-	api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
-	api("androidx.activity:activity-ktx:1.6.1")
-	api("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0")
-	api("androidx.fragment:fragment-ktx:1.5.5")
+	api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
+	api("androidx.activity:activity-ktx:1.7.2")
+	api("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
+	api("androidx.fragment:fragment-ktx:1.6.0")
 }
 
 afterEvaluate {
