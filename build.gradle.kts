@@ -16,13 +16,13 @@ subprojects {
 
 buildscript {
 	dependencies {
-		classpath("com.android.tools.build:gradle:8.0.2")
-		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.22")
+		classpath("com.android.tools.build:gradle:8.1.0")
+		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0")
 	}
 }
 
 tasks.register<Delete>("clean").configure {
-	delete(rootProject.buildDir)
+	delete(rootProject.layout.buildDirectory)
 }
 
 val ossrhUsername by extra("")

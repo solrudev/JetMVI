@@ -53,10 +53,10 @@ tasks.withType<KotlinJvmCompile> {
 }
 
 dependencies {
-	api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
+	api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 	api("androidx.activity:activity-ktx:1.7.2")
 	api("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
-	api("androidx.fragment:fragment-ktx:1.6.0")
+	api("androidx.fragment:fragment-ktx:1.6.1")
 }
 
 afterEvaluate {
