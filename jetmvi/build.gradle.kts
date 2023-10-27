@@ -17,8 +17,8 @@ kotlin {
 }
 
 android {
-	compileSdk = 33
-	buildToolsVersion = "33.0.2"
+	compileSdk = 34
+	buildToolsVersion = "34.0.0"
 	namespace = "$publishGroupId.$publishArtifactId"
 
 	publishing {
